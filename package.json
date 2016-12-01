@@ -1,0 +1,29 @@
+{
+  "name": "1",
+  "version": "1.0.0",
+  "description": "first try",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Glareone/Babel.git"
+  },
+  "author": "Glareone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Glareone/Babel/issues"
+  },
+  "homepage": "https://github.com/Glareone/Babel#readme",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-es2015": "^6.18.0",
+    "css-loader": "^0.26.0",
+    "handlebars-loader": "^1.4.0",
+    "json-loader": "^0.5.4",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.3"
+  }
+}
