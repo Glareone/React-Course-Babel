@@ -79,48 +79,77 @@
 	    parent.appendChild(createElement(newNode));
 	  } else if (!newNode) {
 	    parent.removeChild(parent.childNodes[index]);
-	  } else if (isChanged(newNode, oldNode)) {
+	  } else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode)) {
 	    parent.replaceChild(createElement(newNode), parent.childNodes[index]);
-	  } else if (newNode.type) {
-	    var newLength = newNode.children.length;
-	    var oldLength = oldNode.children.length;
-
-	    for (var i = 0; i < newLength || i < oldLength; i++) {
-	      updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-	    }
 	  }
+	  //else if (!isChanged(newNode, oldNode) && isInlineStyleChanged(newNode, oldNode)){
+	  //oldNode.props.style = newNode.props.style;
+	  //oldNode.removeAttr('style');
+	  //oldNode.style.cssText = document.defaultView.getComputedStyle(newNode, "").cssText;
+	  //}
+	  else if (newNode.type) {
+	      var newLength = newNode.children.length;
+	      var oldLength = oldNode.children.length;
+
+	      for (var i = 0; i < newLength || i < oldLength; i++) {
+	        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
+	      }
+	    }
 	}
 
 	function isChanged(node1, node2) {
 	  return (typeof node1 === 'undefined' ? 'undefined' : _typeof(node1)) !== (typeof node2 === 'undefined' ? 'undefined' : _typeof(node2)) || typeof node1 === 'string' && node1 !== node2 || node1.type !== node2.type;
 	}
 
+	function isInlineStyleChanged(node1, node2) {
+	  if (typeof node1 !== 'string' && typeof node2 !== 'string') {
+
+	    //var element1 = document.getElementById(node1.props.style);
+	    //var element2 = document.getElementById(node2.props.id);
+
+	    var style1 = node1.props.style;
+	    var style2 = node2.props.style;
+
+	    //var style1 = window.getComputedStyle(element1, null).cssText;
+	    //var style1 = node1.style;
+	    //var style2 = window.getComputedStyle(element2, null).cssText;
+	    //var style2 = node2.style;
+	    return style1 != style2;
+	  }
+	  return false;
+	}
+
+	var ulStyle1 = { width: '100px' };
+	var ulStyle2 = { width: '150px' };
+	var liStyle1 = { border: '1px solid #ccc' };
+	var liStyle2 = { border: '1px solid #aaa' };
+
 	var dom1 = createVirtualNode(
 	  'ul',
-	  null,
+	  { id: '1' },
 	  createVirtualNode(
 	    'li',
-	    null,
+	    { id: '2', style: liStyle1 },
 	    'item 1'
 	  ),
 	  createVirtualNode(
 	    'li',
-	    null,
+	    { id: '3' },
 	    'item 2'
 	  )
 	);
 
 	var dom2 = createVirtualNode(
 	  'ul',
-	  null,
+	  { id: '1' },
 	  createVirtualNode(
 	    'li',
-	    null,
+	    { id: '2', style: liStyle2 },
 	    'item 1'
 	  ),
 	  createVirtualNode(
 	    'li',
-	    null,
+	    { id: '3' },
 	    'some change'
 	  )
 	);

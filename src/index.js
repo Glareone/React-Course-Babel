@@ -28,9 +28,14 @@ function updateElement(parent, newNode, oldNode, index = 0) {
     else if (!newNode) {
       parent.removeChild(parent.childNodes[index]);
     }
-    else if (isChanged(newNode, oldNode)) {
+    else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode)) {
       parent.replaceChild(createElement(newNode), parent.childNodes[index]);
     }
+    //else if (!isChanged(newNode, oldNode) && isInlineStyleChanged(newNode, oldNode)){
+      //oldNode.props.style = newNode.props.style;
+      //oldNode.removeAttr('style');
+      //oldNode.style.cssText = document.defaultView.getComputedStyle(newNode, "").cssText;
+    //}
     else if (newNode.type) {
       const newLength = newNode.children.length;
       const oldLength = oldNode.children.length;
@@ -47,10 +52,32 @@ function isChanged(node1, node2) {
       || node1.type !== node2.type
 }
 
+function isInlineStyleChanged(node1, node2) {
+  if( typeof node1 !== 'string' && typeof node2 !== 'string'){
 
-const dom1 = (<ul><li>item 1</li><li>item 2</li></ul>);
+    //var element1 = document.getElementById(node1.props.style);
+    //var element2 = document.getElementById(node2.props.id);
 
-const dom2 = (<ul><li>item 1</li><li>some change</li></ul>);
+    var style1 = node1.props.style;
+    var style2 = node2.props.style;
+
+    //var style1 = window.getComputedStyle(element1, null).cssText;
+    //var style1 = node1.style;
+    //var style2 = window.getComputedStyle(element2, null).cssText;
+    //var style2 = node2.style;
+    return style1 != style2;
+  }
+    return false;
+}
+
+const ulStyle1 = { width : '100px'};
+const ulStyle2 = { width : '150px'};
+const liStyle1 = { border: '1px solid #ccc'};
+const liStyle2 = { border: '1px solid #aaa'};
+
+const dom1 = (<ul id="1"><li id="2" style={liStyle1}>item 1</li><li id="3">item 2</li></ul>);
+
+const dom2 = (<ul id="1"><li id="2" style={liStyle2}>item 1</li><li id="3">some change</li></ul>);
 
 const $root = document.getElementById('root');
 const $button = document.getElementById('button');
