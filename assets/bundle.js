@@ -44,8 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	__webpack_require__(1);
@@ -97,9 +95,35 @@
 	  return (typeof node1 === 'undefined' ? 'undefined' : _typeof(node1)) !== (typeof node2 === 'undefined' ? 'undefined' : _typeof(node2)) || typeof node1 === 'string' && node1 !== node2 || node1.type !== node2.type;
 	}
 
-	var dom1 = "<ul><li>item 1</li><li>item 2</li></ul>";
+	var dom1 = createVirtualNode(
+	  'ul',
+	  null,
+	  createVirtualNode(
+	    'li',
+	    null,
+	    'item 1'
+	  ),
+	  createVirtualNode(
+	    'li',
+	    null,
+	    'item 2'
+	  )
+	);
 
-	var dom2 = "<ul><li>item 1</li><li>some change</li></ul>";
+	var dom2 = createVirtualNode(
+	  'ul',
+	  null,
+	  createVirtualNode(
+	    'li',
+	    null,
+	    'item 1'
+	  ),
+	  createVirtualNode(
+	    'li',
+	    null,
+	    'some change'
+	  )
+	);
 
 	var $root = document.getElementById('root');
 	var $button = document.getElementById('button');

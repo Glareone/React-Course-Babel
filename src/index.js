@@ -48,9 +48,9 @@ function isChanged(node1, node2) {
 }
 
 
-const dom1 = "<ul><li>item 1</li><li>item 2</li></ul>";
+const dom1 = (<ul><li>item 1</li><li>item 2</li></ul>);
 
-const dom2 = "<ul><li>item 1</li><li>some change</li></ul>";
+const dom2 = (<ul><li>item 1</li><li>some change</li></ul>);
 
 const $root = document.getElementById('root');
 const $button = document.getElementById('button');
