@@ -93,13 +93,15 @@ const dom1 = (<ul id="1">
                 <li id="3" className={styles.DOMstyles.liClass2}>item 2</li>
                 <li id="4" className={styles.DOMstyles.liClass2} style={styles.DOMstyles.liStyle3}>item 3</li>
                 <li id="5">item 4</li>
+                <li id="6"><div>div 5</div></li>
               </ul>);
 
 const dom2 = (<ul id="1">
                 <li id="2"  className={styles.DOMstyles.liClass1} style={styles.DOMstyles.liStyle2}>item 1</li>
                 <li id="3">some change</li>
                 <li id="4" className={styles.DOMstyles.liClass2} style={styles.DOMstyles.liStyle3}>item 3</li>
-                <li id="5">new item 4 without changing style</li>
+                <li id="5">new item 4 without changing style but new tag</li>
+                <li id="6"><div>div 5</div></li>
               </ul>);
 
 const $root = document.getElementById('root');

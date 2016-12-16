@@ -156,6 +156,15 @@
 	    "li",
 	    { id: "5" },
 	    "item 4"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "6" },
+	    createVirtualNode(
+	      "div",
+	      null,
+	      "div 5"
+	    )
 	  )
 	);
 
@@ -180,7 +189,16 @@
 	  createVirtualNode(
 	    "li",
 	    { id: "5" },
-	    "new item 4 without changing style"
+	    "new item 4 without changing style but new tag"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "6" },
+	    createVirtualNode(
+	      "div",
+	      null,
+	      "div 5"
+	    )
 	  )
 	);
 
