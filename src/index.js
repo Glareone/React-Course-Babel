@@ -41,6 +41,8 @@ function updateElement(parent, newNode, oldNode, index = 0) {
     else if(isStyleClassChanged(newNode, oldNode)){
       // reference to new style
       newNode.props.className = oldNode.props.className;
+      var message = 'style changed between ${newNode} and ${oldNode}';
+      console.log(message);
 
       //check all kids
       const newLength = newNode.children.length;
@@ -66,8 +68,9 @@ function isChanged(node1, node2) {
 }
 
 function isInlineStyleChanged(node1, node2) {
-  if(typeof node1 == 'object' && typeof node2 == 'object'){
-
+  if(typeof node1 !== 'object' && typeof node2 !== 'object' || (!node1.props && !node2.props)){
+    return false;
+  }
     let style1 = node1.props.style;
     let style2 = node2.props.style;
 
@@ -75,15 +78,17 @@ function isInlineStyleChanged(node1, node2) {
       return true;
     }
     // if 0 then changed
-    let comp = (style1.toString()).localeCompare(style2.toString());
-    return comp === 0;
-  }
+    return (style1.toString()).localeCompare(style2.toString()) === 0;
+
     return false;
 }
 
 function isStyleClassChanged(newNode,oldNode) {
-  if(typeof newNode == 'object' && typeof oldNode == 'object' && (newNode.props.className || oldNode.props.className) ){
-    return JSON.stringify(newNode) === JSON.stringify(oldNode);
+  if(typeof newNode == 'object' && typeof oldNode == 'object' && (newNode.props || oldNode.props) ){
+    if(!newNode.props.className || !oldNode.props.className){
+      return true;
+    }
+    return JSON.stringify(newNode.props.className) === JSON.stringify(oldNode.props.className);
   }
   return false;
 }

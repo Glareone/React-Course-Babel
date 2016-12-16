@@ -90,6 +90,8 @@
 	  } else if (isStyleClassChanged(newNode, oldNode)) {
 	    // reference to new style
 	    newNode.props.className = oldNode.props.className;
+	    var message = 'style changed between ${newNode} and ${oldNode}';
+	    console.log(message);
 
 	    //check all kids
 	    var _newLength = newNode.children.length;
@@ -112,24 +114,27 @@
 	}
 
 	function isInlineStyleChanged(node1, node2) {
-	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) == 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) == 'object') {
-
-	    var style1 = node1.props.style;
-	    var style2 = node2.props.style;
-
-	    if (!style1 || !style2) {
-	      return true;
-	    }
-	    // if 0 then changed
-	    var comp = style1.toString().localeCompare(style2.toString());
-	    return comp === 0;
+	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) !== 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) !== 'object' || !node1.props && !node2.props) {
+	    return false;
 	  }
+	  var style1 = node1.props.style;
+	  var style2 = node2.props.style;
+
+	  if (!style1 || !style2) {
+	    return true;
+	  }
+	  // if 0 then changed
+	  return style1.toString().localeCompare(style2.toString()) === 0;
+
 	  return false;
 	}
 
 	function isStyleClassChanged(newNode, oldNode) {
-	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object' && (newNode.props.className || oldNode.props.className)) {
-	    return JSON.stringify(newNode) === JSON.stringify(oldNode);
+	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object' && (newNode.props || oldNode.props)) {
+	    if (!newNode.props.className || !oldNode.props.className) {
+	      return true;
+	    }
+	    return JSON.stringify(newNode.props.className) === JSON.stringify(oldNode.props.className);
 	  }
 	  return false;
 	}
