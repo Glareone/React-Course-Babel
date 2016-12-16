@@ -76,27 +76,29 @@
 	    parent.appendChild(createElement(newNode));
 	  } else if (!newNode) {
 	    parent.removeChild(parent.childNodes[index]);
-	  } else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode) || isStyleClassChanged(newNode, oldNode)) {
-	    if (isChanged(newNode, oldNode)) {
-	      parent.replaceChild(createElement(newNode), parent.childNodes[index]);
-	    } else if (isInlineStyleChanged(newNode, oldNode)) {
-	      newNode.props.style = "" + oldNode.props.style;
+	  } else if (isChanged(newNode, oldNode)) {
+	    parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+	  } else if (isInlineStyleChanged(newNode, oldNode)) {
+	    // copy inline style because string is immutable
+	    newNode.props.style = "" + oldNode.props.style;
+	    //check all kids
+	    var newLength = newNode.children.length;
+	    var oldLength = oldNode.children.length;
+	    for (var i = 0; i < newLength || i < oldLength; i++) {
+	      updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
+	    }
+	  } else if (isStyleClassChanged(newNode, oldNode)) {
+	    // reference to new style
+	    newNode.props.className = oldNode.props.className;
 
-	      var newLength = newNode.children.length;
-	      var oldLength = oldNode.children.length;
-	      for (var i = 0; i < newLength || i < oldLength; i++) {
-	        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-	      }
-	    } else if (isStyleClassChanged(newNode, oldNode)) {
-	      newNode.props.className = oldNode.props.className;
-
-	      var _newLength = newNode.children.length;
-	      var _oldLength = oldNode.children.length;
-	      for (var _i = 0; _i < _newLength || _i < _oldLength; _i++) {
-	        updateElement(parent.childNodes[index], newNode.children[_i], oldNode.children[_i], _i);
-	      }
+	    //check all kids
+	    var _newLength = newNode.children.length;
+	    var _oldLength = oldNode.children.length;
+	    for (var _i = 0; _i < _newLength || _i < _oldLength; _i++) {
+	      updateElement(parent.childNodes[index], newNode.children[_i], oldNode.children[_i], _i);
 	    }
 	  } else if (newNode.type) {
+	    //only check kids, no changes in this element
 	    var _newLength2 = newNode.children.length;
 	    var _oldLength2 = oldNode.children.length;
 	    for (var _i2 = 0; _i2 < _newLength2 || _i2 < _oldLength2; _i2++) {
@@ -128,8 +130,8 @@
 	}
 
 	function isStyleClassChanged(newNode, oldNode) {
-	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object') {
-	    return newNode.props.className === newNode.props.className;
+	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object' && (newNode.props.className || oldNode.props.className)) {
+	    newNode.props.className = oldNode.props.className;
 	  }
 	  return false;
 	}
@@ -162,6 +164,11 @@
 	    "li",
 	    { id: "4", className: styles.DOMstyles.liClass2, style: styles.DOMstyles.liStyle3 },
 	    "item 3"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "5" },
+	    "item 4"
 	  )
 	);
 
@@ -182,6 +189,11 @@
 	    "li",
 	    { id: "4", className: styles.DOMstyles.liClass2, style: styles.DOMstyles.liStyle3 },
 	    "item 3"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "5" },
+	    "new item 4 without changing style"
 	  )
 	);
 

@@ -25,31 +25,28 @@ function updateElement(parent, newNode, oldNode, index = 0) {
     else if (!newNode) {
       parent.removeChild(parent.childNodes[index]);
     }
-    else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode) || isStyleClassChanged(newNode, oldNode)) {
-      if(isChanged(newNode, oldNode)){
+    else if (isChanged(newNode, oldNode)) {
         parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+    }
+    else if(isInlineStyleChanged(newNode, oldNode)){
+      // copy inline style because string is immutable
+      newNode.props.style = "" + oldNode.props.style;
+      //check all kids
+      const newLength = newNode.children.length;
+      const oldLength = oldNode.children.length;
+      for (let i = 0; i < newLength || i < oldLength; i++) {
+        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
       }
-      else if(isInlineStyleChanged(newNode, oldNode)){
-        // copy inline style because string is immutable
-        newNode.props.style = "" + oldNode.props.style;
+    }
+    else if(isStyleClassChanged(newNode, oldNode)){
+      // reference to new style
+      newNode.props.className = oldNode.props.className;
 
-        //check all kids
-        const newLength = newNode.children.length;
-        const oldLength = oldNode.children.length;
-        for (let i = 0; i < newLength || i < oldLength; i++) {
-          updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-        }
-      }
-      else if(isStyleClassChanged(newNode, oldNode)){
-        // reference to new style
-        newNode.props.className = oldNode.props.className;
-
-        //check all kids
-        const newLength = newNode.children.length;
-        const oldLength = oldNode.children.length;
-        for (let i = 0; i < newLength || i < oldLength; i++) {
-          updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-        }
+      //check all kids
+      const newLength = newNode.children.length;
+      const oldLength = oldNode.children.length;
+      for (let i = 0; i < newLength || i < oldLength; i++) {
+        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
       }
     }
     else if (newNode.type) {
@@ -108,12 +105,14 @@ const dom1 = (<ul id="1">
                 <li id="2" className={styles.DOMstyles.liClass1} style={styles.DOMstyles.liStyle1}>item 1</li>
                 <li id="3" className={styles.DOMstyles.liClass2}>item 2</li>
                 <li id="4" className={styles.DOMstyles.liClass2} style={styles.DOMstyles.liStyle3}>item 3</li>
+                <li id="5">item 4</li>
               </ul>);
 
 const dom2 = (<ul id="1">
                 <li id="2"  className={styles.DOMstyles.liClass1} style={styles.DOMstyles.liStyle2}>item 1</li>
                 <li id="3">some change</li>
                 <li id="4" className={styles.DOMstyles.liClass2} style={styles.DOMstyles.liStyle3}>item 3</li>
+                <li id="5">new item 4 without changing style</li>
               </ul>);
 
 const $root = document.getElementById('root');
