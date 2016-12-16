@@ -68,17 +68,15 @@ function isChanged(node1, node2) {
 function isInlineStyleChanged(node1, node2) {
   if(typeof node1 == 'object' && typeof node2 == 'object'){
 
-    //var element1 = document.getElementById(node1.props.style);
-    //var element2 = document.getElementById(node2.props.id);
+    let style1 = node1.props.style;
+    let style2 = node2.props.style;
 
-    var style1 = node1.props.style;
-    var style2 = node2.props.style;
-
-    //var style1 = window.getComputedStyle(element1, null).cssText;
-    //var style1 = node1.style;
-    //var style2 = window.getComputedStyle(element2, null).cssText;
-    //var style2 = node2.style;
-    return style1 != style2;
+    if(!style1 || !style2){
+      return true;
+    }
+    // if 0 then changed
+    let comp = (style1.toString()).localeCompare(style2.toString());
+    return comp === 0;
   }
     return false;
 }
@@ -89,17 +87,6 @@ function isStyleClassChanged(newNode,oldNode) {
   }
   return false;
 }
-
-//var StyleSheet = require('react-style')
-
-//var styles = StyleSheet.create({
-
-
-//const ulStyle1 = { width : '100px'};
-//const ulStyle2 = { width : '150px'};
-//const liStyle1 = { border: '1px solid #ccc', color : 'black'};
-//const liStyle2 = { border: '1px solid #aaa', color : 'red'};
-//const liStyle3 = { border: '1px solid #ccc', color : 'blue'};
 
 const dom1 = (<ul id="1">
                 <li id="2" className={styles.DOMstyles.liClass1} style={styles.DOMstyles.liStyle1}>item 1</li>

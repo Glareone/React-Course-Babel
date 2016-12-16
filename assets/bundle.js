@@ -114,17 +114,15 @@
 	function isInlineStyleChanged(node1, node2) {
 	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) == 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) == 'object') {
 
-	    //var element1 = document.getElementById(node1.props.style);
-	    //var element2 = document.getElementById(node2.props.id);
-
 	    var style1 = node1.props.style;
 	    var style2 = node2.props.style;
 
-	    //var style1 = window.getComputedStyle(element1, null).cssText;
-	    //var style1 = node1.style;
-	    //var style2 = window.getComputedStyle(element2, null).cssText;
-	    //var style2 = node2.style;
-	    return style1 != style2;
+	    if (!style1 || !style2) {
+	      return true;
+	    }
+	    // if 0 then changed
+	    var comp = style1.toString().localeCompare(style2.toString());
+	    return comp === 0;
 	  }
 	  return false;
 	}
@@ -135,17 +133,6 @@
 	  }
 	  return false;
 	}
-
-	//var StyleSheet = require('react-style')
-
-	//var styles = StyleSheet.create({
-
-
-	//const ulStyle1 = { width : '100px'};
-	//const ulStyle2 = { width : '150px'};
-	//const liStyle1 = { border: '1px solid #ccc', color : 'black'};
-	//const liStyle2 = { border: '1px solid #aaa', color : 'red'};
-	//const liStyle3 = { border: '1px solid #ccc', color : 'blue'};
 
 	var dom1 = createVirtualNode(
 	  "ul",
