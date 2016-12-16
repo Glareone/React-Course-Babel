@@ -131,7 +131,7 @@
 
 	function isStyleClassChanged(newNode, oldNode) {
 	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object' && (newNode.props.className || oldNode.props.className)) {
-	    newNode.props.className = oldNode.props.className;
+	    return JSON.stringify(newNode) === JSON.stringify(oldNode);
 	  }
 	  return false;
 	}

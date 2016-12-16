@@ -85,7 +85,7 @@ function isInlineStyleChanged(node1, node2) {
 
 function isStyleClassChanged(newNode,oldNode) {
   if(typeof newNode == 'object' && typeof oldNode == 'object' && (newNode.props.className || oldNode.props.className) ){
-    newNode.props.className = oldNode.props.className;
+    return JSON.stringify(newNode) === JSON.stringify(oldNode);
   }
   return false;
 }
