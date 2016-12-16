@@ -47,10 +47,7 @@
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	__webpack_require__(1);
-	// const PI = 3.141593;
-	// document.write("it works");
-	// document.write(require("./content.js"));
-
+	var styles = __webpack_require__(5);
 
 	/** @jsx createVirtualNode */
 	function createVirtualNode(type, props) {
@@ -79,30 +76,41 @@
 	    parent.appendChild(createElement(newNode));
 	  } else if (!newNode) {
 	    parent.removeChild(parent.childNodes[index]);
-	  } else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode)) {
-	    parent.replaceChild(createElement(newNode), parent.childNodes[index]);
-	  }
-	  //else if (!isChanged(newNode, oldNode) && isInlineStyleChanged(newNode, oldNode)){
-	  //oldNode.props.style = newNode.props.style;
-	  //oldNode.removeAttr('style');
-	  //oldNode.style.cssText = document.defaultView.getComputedStyle(newNode, "").cssText;
-	  //}
-	  else if (newNode.type) {
+	  } else if (isChanged(newNode, oldNode) || isInlineStyleChanged(newNode, oldNode) || isStyleClassChanged(newNode, oldNode)) {
+	    if (isChanged(newNode, oldNode)) {
+	      parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+	    } else if (isInlineStyleChanged(newNode, oldNode)) {
+	      newNode.props.style = "" + oldNode.props.style;
+
 	      var newLength = newNode.children.length;
 	      var oldLength = oldNode.children.length;
-
 	      for (var i = 0; i < newLength || i < oldLength; i++) {
 	        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
 	      }
+	    } else if (isStyleClassChanged(newNode, oldNode)) {
+	      newNode.props.className = oldNode.props.className;
+
+	      var _newLength = newNode.children.length;
+	      var _oldLength = oldNode.children.length;
+	      for (var _i = 0; _i < _newLength || _i < _oldLength; _i++) {
+	        updateElement(parent.childNodes[index], newNode.children[_i], oldNode.children[_i], _i);
+	      }
 	    }
+	  } else if (newNode.type) {
+	    var _newLength2 = newNode.children.length;
+	    var _oldLength2 = oldNode.children.length;
+	    for (var _i2 = 0; _i2 < _newLength2 || _i2 < _oldLength2; _i2++) {
+	      updateElement(parent.childNodes[index], newNode.children[_i2], oldNode.children[_i2], _i2);
+	    }
+	  }
 	}
 
 	function isChanged(node1, node2) {
-	  return (typeof node1 === 'undefined' ? 'undefined' : _typeof(node1)) !== (typeof node2 === 'undefined' ? 'undefined' : _typeof(node2)) || typeof node1 === 'string' && node1 !== node2 || node1.type !== node2.type;
+	  return (typeof node1 === "undefined" ? "undefined" : _typeof(node1)) !== (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) || typeof node1 === 'string' && node1 !== node2 || node1.type !== node2.type;
 	}
 
 	function isInlineStyleChanged(node1, node2) {
-	  if (typeof node1 !== 'string' && typeof node2 !== 'string') {
+	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) == 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) == 'object') {
 
 	    //var element1 = document.getElementById(node1.props.style);
 	    //var element2 = document.getElementById(node2.props.id);
@@ -119,38 +127,61 @@
 	  return false;
 	}
 
-	var ulStyle1 = { width: '100px' };
-	var ulStyle2 = { width: '150px' };
-	var liStyle1 = { border: '1px solid #ccc' };
-	var liStyle2 = { border: '1px solid #aaa' };
+	function isStyleClassChanged(newNode, oldNode) {
+	  if ((typeof newNode === "undefined" ? "undefined" : _typeof(newNode)) == 'object' && (typeof oldNode === "undefined" ? "undefined" : _typeof(oldNode)) == 'object') {
+	    return newNode.props.className === newNode.props.className;
+	  }
+	  return false;
+	}
+
+	//var StyleSheet = require('react-style')
+
+	//var styles = StyleSheet.create({
+
+
+	//const ulStyle1 = { width : '100px'};
+	//const ulStyle2 = { width : '150px'};
+	//const liStyle1 = { border: '1px solid #ccc', color : 'black'};
+	//const liStyle2 = { border: '1px solid #aaa', color : 'red'};
+	//const liStyle3 = { border: '1px solid #ccc', color : 'blue'};
 
 	var dom1 = createVirtualNode(
-	  'ul',
-	  { id: '1' },
+	  "ul",
+	  { id: "1" },
 	  createVirtualNode(
-	    'li',
-	    { id: '2', style: liStyle1 },
-	    'item 1'
+	    "li",
+	    { id: "2", className: styles.DOMstyles.liClass1, style: styles.DOMstyles.liStyle1 },
+	    "item 1"
 	  ),
 	  createVirtualNode(
-	    'li',
-	    { id: '3' },
-	    'item 2'
+	    "li",
+	    { id: "3", className: styles.DOMstyles.liClass2 },
+	    "item 2"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "4", className: styles.DOMstyles.liClass2, style: styles.DOMstyles.liStyle3 },
+	    "item 3"
 	  )
 	);
 
 	var dom2 = createVirtualNode(
-	  'ul',
-	  { id: '1' },
+	  "ul",
+	  { id: "1" },
 	  createVirtualNode(
-	    'li',
-	    { id: '2', style: liStyle2 },
-	    'item 1'
+	    "li",
+	    { id: "2", className: styles.DOMstyles.liClass1, style: styles.DOMstyles.liStyle2 },
+	    "item 1"
 	  ),
 	  createVirtualNode(
-	    'li',
-	    { id: '3' },
-	    'some change'
+	    "li",
+	    { id: "3" },
+	    "some change"
+	  ),
+	  createVirtualNode(
+	    "li",
+	    { id: "4", className: styles.DOMstyles.liClass2, style: styles.DOMstyles.liStyle3 },
+	    "item 3"
 	  )
 	);
 
@@ -510,6 +541,25 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports.DOMstyles = {
+	  foo: {
+	    color: 'red',
+	    backgroundColor: 'white'
+	  },
+	  ulStyle1: { width: '100px' },
+	  ulStyle2: { width: '150px' },
+	  liStyle1: { border: '1px solid #ccc', color: 'black' },
+	  liStyle2: { border: '1px solid #aaa', color: 'red' },
+	  liStyle3: { border: '1px solid #ccc', color: 'blue' },
+
+	  liClass1: { content: "¶" },
+	  liClass2: { content: "=" }
+	};
 
 /***/ }
 /******/ ]);
