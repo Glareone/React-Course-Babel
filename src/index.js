@@ -19,45 +19,39 @@ function createElement(node) {
 }
 
 function updateElement(parent, newNode, oldNode, index = 0) {
-    if (!oldNode) {
+    if(!oldNode) {
       parent.appendChild(createElement(newNode));
+      return;
     }
-    else if (!newNode) {
+    if(!newNode) {
       parent.removeChild(parent.childNodes[index]);
+      return;
     }
-    else if (isChanged(newNode, oldNode)) {
+    if(isChanged(newNode, oldNode)) {
         parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+        return;
     }
-    else if(isInlineStyleChanged(newNode, oldNode)){
+    if(isInlineStyleChanged(newNode, oldNode)){
       // copy inline style because string is immutable
       newNode.props.style = "" + oldNode.props.style;
-      //check all kids
-      const newLength = newNode.children.length;
-      const oldLength = oldNode.children.length;
-      for (let i = 0; i < newLength || i < oldLength; i++) {
-        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-      }
+      // set new Id
+      newNode.props.id = "" + oldNode.props.id;
+      console.log('inline style changed');
     }
-    else if(isStyleClassChanged(newNode, oldNode)){
+    if(isStyleClassChanged(newNode, oldNode)){
       // reference to new style
       newNode.props.className = oldNode.props.className;
-      var message = 'style changed between ${newNode} and ${oldNode}';
-      console.log(message);
 
-      //check all kids
-      const newLength = newNode.children.length;
-      const oldLength = oldNode.children.length;
-      for (let i = 0; i < newLength || i < oldLength; i++) {
-        updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
-      }
+      console.log('style Class changed');
     }
-    else if (newNode.type) {
-      //only check kids, no changes in this element
+    if (newNode.type) {
+      //check kids after checking inlineStyles and ClassName
       const newLength = newNode.children.length;
       const oldLength = oldNode.children.length;
       for (let i = 0; i < newLength || i < oldLength; i++) {
         updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
       }
+      return;
     }
 }
 
@@ -68,19 +62,25 @@ function isChanged(node1, node2) {
 }
 
 function isInlineStyleChanged(node1, node2) {
-  if(typeof node1 !== 'object' && typeof node2 !== 'object' || (!node1.props && !node2.props)){
+  // if both is not objests
+  if(typeof node1 !== 'object' && typeof node2 !== 'object'){
     return false;
   }
-    let style1 = node1.props.style;
-    let style2 = node2.props.style;
 
-    if(!style1 || !style2){
-      return true;
-    }
-    // if 0 then changed
-    return (style1.toString()).localeCompare(style2.toString()) === 0;
+  let style1 = node1.props !== undefined && node1.props !== null ? JSON.stringify(node1.props.style) : undefined;
+  let style2 = node2.props !== undefined && node1.props !== null ? JSON.stringify(node2.props.style) : undefined;
 
+    // if 2 objects don't have styles
+  if(style1 == undefined && style2 == undefined){
     return false;
+  }
+
+    // if 2 objects
+  if(style1 == undefined || style2 == undefined){
+    return true;
+  }
+
+  return (style1 > style2 || style1 < style2);
 }
 
 function isStyleClassChanged(newNode,oldNode) {
@@ -104,9 +104,9 @@ const dom1 = (<ul id="1">
 const dom2 = (<ul id="1">
                 <li id="2"  className={styles.DOMstyles.liClass1} style={styles.DOMstyles.liStyle2}>item 1</li>
                 <li id="3">some change</li>
-                <li id="4" className={styles.DOMstyles.liClass2} style={styles.DOMstyles.liStyle3}>item 3</li>
+                <li id="4" className={styles.DOMstyles.liClass3} style={styles.DOMstyles.liStyle3}>item 3</li>
                 <li id="5">new item 4 without changing style but new tag</li>
-                <li id="6"><div>div 5</div></li>
+                <li id="6"><div>div 6</div></li>
               </ul>);
 
 const $root = document.getElementById('root');

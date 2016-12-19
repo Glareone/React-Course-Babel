@@ -74,38 +74,37 @@
 
 	  if (!oldNode) {
 	    parent.appendChild(createElement(newNode));
-	  } else if (!newNode) {
+	    return;
+	  }
+	  if (!newNode) {
 	    parent.removeChild(parent.childNodes[index]);
-	  } else if (isChanged(newNode, oldNode)) {
+	    return;
+	  }
+	  if (isChanged(newNode, oldNode)) {
 	    parent.replaceChild(createElement(newNode), parent.childNodes[index]);
-	  } else if (isInlineStyleChanged(newNode, oldNode)) {
+	    return;
+	  }
+	  if (isInlineStyleChanged(newNode, oldNode)) {
 	    // copy inline style because string is immutable
 	    newNode.props.style = "" + oldNode.props.style;
-	    //check all kids
+	    // set new Id
+	    newNode.props.id = "" + oldNode.props.id;
+	    console.log('inline style changed');
+	  }
+	  if (isStyleClassChanged(newNode, oldNode)) {
+	    // reference to new style
+	    newNode.props.className = oldNode.props.className;
+
+	    console.log('style Class changed');
+	  }
+	  if (newNode.type) {
+	    //check kids after checking inlineStyles and ClassName
 	    var newLength = newNode.children.length;
 	    var oldLength = oldNode.children.length;
 	    for (var i = 0; i < newLength || i < oldLength; i++) {
 	      updateElement(parent.childNodes[index], newNode.children[i], oldNode.children[i], i);
 	    }
-	  } else if (isStyleClassChanged(newNode, oldNode)) {
-	    // reference to new style
-	    newNode.props.className = oldNode.props.className;
-	    var message = 'style changed between ${newNode} and ${oldNode}';
-	    console.log(message);
-
-	    //check all kids
-	    var _newLength = newNode.children.length;
-	    var _oldLength = oldNode.children.length;
-	    for (var _i = 0; _i < _newLength || _i < _oldLength; _i++) {
-	      updateElement(parent.childNodes[index], newNode.children[_i], oldNode.children[_i], _i);
-	    }
-	  } else if (newNode.type) {
-	    //only check kids, no changes in this element
-	    var _newLength2 = newNode.children.length;
-	    var _oldLength2 = oldNode.children.length;
-	    for (var _i2 = 0; _i2 < _newLength2 || _i2 < _oldLength2; _i2++) {
-	      updateElement(parent.childNodes[index], newNode.children[_i2], oldNode.children[_i2], _i2);
-	    }
+	    return;
 	  }
 	}
 
@@ -114,19 +113,25 @@
 	}
 
 	function isInlineStyleChanged(node1, node2) {
-	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) !== 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) !== 'object' || !node1.props && !node2.props) {
+	  // if both is not objests
+	  if ((typeof node1 === "undefined" ? "undefined" : _typeof(node1)) !== 'object' && (typeof node2 === "undefined" ? "undefined" : _typeof(node2)) !== 'object') {
 	    return false;
 	  }
-	  var style1 = node1.props.style;
-	  var style2 = node2.props.style;
 
-	  if (!style1 || !style2) {
+	  var style1 = node1.props !== undefined && node1.props !== null ? JSON.stringify(node1.props.style) : undefined;
+	  var style2 = node2.props !== undefined && node1.props !== null ? JSON.stringify(node2.props.style) : undefined;
+
+	  // if 2 objects don't have styles
+	  if (style1 == undefined && style2 == undefined) {
+	    return false;
+	  }
+
+	  // if 2 objects
+	  if (style1 == undefined || style2 == undefined) {
 	    return true;
 	  }
-	  // if 0 then changed
-	  return style1.toString().localeCompare(style2.toString()) === 0;
 
-	  return false;
+	  return style1 > style2 || style1 < style2;
 	}
 
 	function isStyleClassChanged(newNode, oldNode) {
@@ -188,7 +193,7 @@
 	  ),
 	  createVirtualNode(
 	    "li",
-	    { id: "4", className: styles.DOMstyles.liClass2, style: styles.DOMstyles.liStyle3 },
+	    { id: "4", className: styles.DOMstyles.liClass3, style: styles.DOMstyles.liStyle3 },
 	    "item 3"
 	  ),
 	  createVirtualNode(
@@ -202,7 +207,7 @@
 	    createVirtualNode(
 	      "div",
 	      null,
-	      "div 5"
+	      "div 6"
 	    )
 	  )
 	);
