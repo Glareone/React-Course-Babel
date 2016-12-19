@@ -28,8 +28,8 @@ function updateElement(parent, newNode, oldNode, index = 0) {
       return;
     }
     if(isChanged(newNode, oldNode)) {
-        parent.replaceChild(createElement(newNode), parent.childNodes[index]);
-        return;
+      parent.replaceChild(createElement(newNode), parent.childNodes[index]);
+      return;
     }
     if(isInlineStyleChanged(newNode, oldNode)){
       // copy inline style because string is immutable
@@ -41,7 +41,6 @@ function updateElement(parent, newNode, oldNode, index = 0) {
     if(isStyleClassChanged(newNode, oldNode)){
       // reference to new style
       newNode.props.className = oldNode.props.className;
-
       console.log('style Class changed');
     }
     if (newNode.type) {
@@ -69,17 +68,14 @@ function isInlineStyleChanged(node1, node2) {
 
   let style1 = node1.props !== undefined && node1.props !== null ? JSON.stringify(node1.props.style) : undefined;
   let style2 = node2.props !== undefined && node1.props !== null ? JSON.stringify(node2.props.style) : undefined;
-
-    // if 2 objects don't have styles
+  // if 2 objects don't have styles
   if(style1 == undefined && style2 == undefined){
     return false;
   }
-
-    // if 2 objects
+  // if 2 objects
   if(style1 == undefined || style2 == undefined){
     return true;
   }
-
   return (style1 > style2 || style1 < style2);
 }
 

@@ -94,7 +94,6 @@
 	  if (isStyleClassChanged(newNode, oldNode)) {
 	    // reference to new style
 	    newNode.props.className = oldNode.props.className;
-
 	    console.log('style Class changed');
 	  }
 	  if (newNode.type) {
@@ -120,17 +119,14 @@
 
 	  var style1 = node1.props !== undefined && node1.props !== null ? JSON.stringify(node1.props.style) : undefined;
 	  var style2 = node2.props !== undefined && node1.props !== null ? JSON.stringify(node2.props.style) : undefined;
-
 	  // if 2 objects don't have styles
 	  if (style1 == undefined && style2 == undefined) {
 	    return false;
 	  }
-
 	  // if 2 objects
 	  if (style1 == undefined || style2 == undefined) {
 	    return true;
 	  }
-
 	  return style1 > style2 || style1 < style2;
 	}
 
